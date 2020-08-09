@@ -2,5 +2,8 @@
   "name": "typescript",
   "version": "0.0.0",
   "private": true,
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "@types/react": "^16.9.45"
+  }
 }

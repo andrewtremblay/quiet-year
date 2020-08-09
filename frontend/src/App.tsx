@@ -1,17 +1,7 @@
 import React from 'react';
 import './App.css';
-import { useFirestoreDocData, useFirestore, SuspenseWithPerf} from 'reactfire';
-function Game() {
-  // lazy load the Firestore SDK and create a document reference
-  const gameRef = useFirestore()
-    .collection('games')
-    .doc('OmBd9g5qTk51AoPoCh8F');
-
-  // subscribe to the doc. just one line!
-  const game: any = useFirestoreDocData(gameRef);
-
-  return <p>{`${Object.keys(game)}`}</p>;
-}
+import { SuspenseWithPerf } from 'reactfire';
+import Game from './components/Game';
 
 function App() {
   return (
