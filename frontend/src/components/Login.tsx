@@ -1,23 +1,52 @@
 import React from 'react';
-import { useFirestoreDocData, useFirestore, SuspenseWithPerf} from 'reactfire';
-import { useStateWithLocalStorage } from '../utils/storage';
+import firebase from 'firebase';
 
 
-function Login() {
-    const [currentGame, setCurrentGame] = useStateWithLocalStorage('currentGame');
-    const [currentUser, setCurrentUser] = useStateWithLocalStorage('currentUser');
+function Login(props: any) {
+    const {
+        currentGame,
+        setCurrentGame,
+        currentUser, 
+        setCurrentUser,
+    } = props;
+    const db = firebase.firestore();
+    const [value, setValue] = React.useState("");
+    const [saving, setSaving] = React.useState(false);
 
     if (currentGame !== '') {
         setCurrentGame('');
     }
 
-    const createNewUser = () => {
-        setCurrentUser('')
+    const createNewUser = async () => {
+        setSaving(true)
+        const userRef = await db.collection("users").add({
+            name: value,
+
+        });  
+        setCurrentUser(userRef.id)
+        setSaving(false);
+    }
+
+    const handleSubmit = (e: any) => {
+        e.preventDefault();
+        if (saving || !value) return;
+        createNewUser();
+        setValue("");
     }
 
     return (
     <div>
-        Set User Name
+        <form onSubmit={handleSubmit}>
+            <input
+                disabled={saving}
+                type="text"
+                className="input"
+                value={value}
+                placeholder="Set User Name"
+                onChange={e => setValue(e.target.value)}
+            />
+        </form>
+        
     </div>);
 }  
 

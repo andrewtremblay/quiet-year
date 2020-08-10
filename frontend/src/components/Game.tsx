@@ -1,16 +1,17 @@
 import React from 'react';
-import { useFirestoreDocData, useFirestore, SuspenseWithPerf} from 'reactfire';
-import { useStateWithLocalStorage } from '../utils/storage';
-import Login from './Login';
-import GameLobby from './GameLobby';
+import { useFirestoreDocData, useFirestore} from 'reactfire';
 
-const LoadedGame = (props: {currentGame: string; currentUser: string}) => {
-    const gameId = 'OmBd9g5qTk51AoPoCh8F';
-    const {currentUser} = props;
+const Game = (props: any) => {
+    const {
+        currentUser, setCurrentUser,
+        currentGame, setCurrentGame
+     } = props;
     const currentUserRef = useFirestore().collection('users').doc(currentUser);
-    const gameRef = useFirestore().collection('games').doc(gameId);
+    const gameRef = useFirestore().collection('games').doc(currentGame);
     const game: any = useFirestoreDocData(gameRef);
     return (<div>
+        <button onClick={() => setCurrentGame('')}>Leave Game</button>
+        <button onClick={() => setCurrentUser('')}>Log Out</button>
        <div>
         {Object.keys(game).map(k => <p key={k}>{`${k + ':' + game[k]}`}</p>)}
       </div>
@@ -19,24 +20,6 @@ const LoadedGame = (props: {currentGame: string; currentUser: string}) => {
         ></img>
         </div>
     );
-}
-
-function Game() {
-  const [currentGame, setCurrentGame] = useStateWithLocalStorage('currentGame');
-  const [currentUser, setCurrentUser] = useStateWithLocalStorage('currentUser');
-  // lazy load the Firestore SDK and create a document reference
-  if (currentUser === '') {
-    return <Login />
-  }
-  if (currentGame === '') {
-    return <GameLobby />
-  }
-
-  // subscribe to the doc. just one line!
-  return <LoadedGame 
-    currentUser={currentUser}
-    currentGame={currentGame}
-  />;
 }
 
 
